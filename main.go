@@ -135,14 +135,9 @@ func main() {
 	io.Copy(hash, in)
 	hashResult := hex.EncodeToString(hash.Sum(nil))
 	logger.Debugf("Hash: %s", hashResult)
-	in.Close()
 
-	// Reopen to rewind
-	in, err = os.Open(filename)
-	if err != nil {
-		logger.Error(err)
-		os.Exit(1)
-	}
+	// Rewind the file
+	in.Seek(0, 0)
 
 	// Create object in Swift
 	out, err := c.ObjectCreate(container, tgt_filename, true, hashResult, "", nil)
